@@ -18,7 +18,7 @@ class ChangePasswordController extends Controller
     {
         $this->mailService = $mailService;
     }
-    public function changePassword(ChangePasswordRequest $request)
+    public function __invoke(ChangePasswordRequest $request)
     {
         try {
             // validation

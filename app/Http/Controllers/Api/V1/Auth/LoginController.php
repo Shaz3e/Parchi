@@ -10,7 +10,7 @@ use Exception;
 
 class LoginController extends Controller
 {
-    public function login(LoginRequest $request)
+    public function __invoke(LoginRequest $request)
     {
         try {
             // Validation

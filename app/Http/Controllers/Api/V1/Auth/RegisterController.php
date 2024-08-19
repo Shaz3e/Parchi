@@ -10,7 +10,7 @@ use Exception;
 
 class RegisterController extends Controller
 {
-    public function register(RegisterRequest $request)
+    public function __invoke(RegisterRequest $request)
     {
         try {
 

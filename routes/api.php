@@ -16,16 +16,16 @@ Route::get('/user', function () {
 Route::domain(config('app.domain'))->group(function () {
 
     // Register
-    Route::post('/register', [RegisterController::class, 'register']);
+    Route::post('/register', RegisterController::class);
 
     // Login
-    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/login', LoginController::class);
 
     // Forget Password
-    Route::post('/forget-password', [ForgetPasswordController::class, 'forgetPassword']);
+    Route::post('/forget-password', ForgetPasswordController::class);
 
     // Reset Password
-    Route::get('/reset-password/{email}/{token}', [ResetPasswordController::class, 'reset']);
+    Route::get('/reset-password/{email}/{token}', ResetPasswordController::class);
 
     Route::middleware('auth:sanctum')->group(function () {
 
@@ -33,6 +33,6 @@ Route::domain(config('app.domain'))->group(function () {
             return 'main url for owner';
         });
 
-        Route::post('/change-password', [ChangePasswordController::class, 'changePassword']);
+        Route::post('/change-password', ChangePasswordController::class);
     });
 });

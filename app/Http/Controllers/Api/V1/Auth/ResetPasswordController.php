@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class ResetPasswordController extends Controller
 {
-    public function reset(Request $request)
+    public function __invoke(Request $request)
     {
         try {
             // Check token

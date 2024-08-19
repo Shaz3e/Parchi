@@ -20,7 +20,7 @@ class ForgetPasswordController extends Controller
         $this->mailService = $mailService;
     }
 
-    public function forgetPassword(ForgetPasswordRequest $request)
+    public function __invoke(ForgetPasswordRequest $request)
     {
         try {
             // Validation
