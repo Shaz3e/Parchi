@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Auth\ChangePasswordController;
 use App\Http\Controllers\Api\V1\Auth\ForgetPasswordController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
@@ -31,5 +32,7 @@ Route::domain(config('app.domain'))->group(function () {
         Route::get('/dashboard', function () {
             return 'main url for owner';
         });
+
+        Route::post('/change-password', [ChangePasswordController::class, 'changePassword']);
     });
 });
