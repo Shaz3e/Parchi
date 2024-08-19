@@ -7,6 +7,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 
 class ResetPasswordController extends Controller
 {
@@ -22,9 +23,7 @@ class ResetPasswordController extends Controller
                 ->exists();
 
             if (!$tokenExists) {
-                return response()->json([
-                    'message' => 'Password reset link is expired, please reset your password again.'
-                ]);
+                Response::message('Password reset link is expired, please reset your password again.');
             }
 
             // When token and email are valid reset password
@@ -36,7 +35,7 @@ class ResetPasswordController extends Controller
             ]);
 
             // Change Password
-            $user->password = bcrypt($request->password);
+            $user->password = bcrypt($validated['password']);
             $user->save();
 
             // Delete the token from database
@@ -44,11 +43,9 @@ class ResetPasswordController extends Controller
                 ->where('email', $request->email)
                 ->delete();
 
-            return response()->json([
-                'message' => "Password has been reset successfully. You can now login",
-            ]);
+            return Response::success("Password has been reset successfully. You can now login");
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()]);
+            Response::error($e->getMessage(), 500);
         }
     }
 }

@@ -9,6 +9,7 @@ use App\Services\MailService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 class ChangePasswordController extends Controller
 {
@@ -27,7 +28,7 @@ class ChangePasswordController extends Controller
             // Check current password
             $user = auth()->user();
             if (!password_verify($validated['current_password'], $user->password)) {
-                return response()->json(['message' => 'Current password is incorrect'], 401);
+                Response::message('Current password is incorrect', 401);
             }
 
             // Change Password
@@ -39,12 +40,12 @@ class ChangePasswordController extends Controller
             try {
                 $this->mailService->sendEmail($mailable, $user->email);
 
-                return response()->json(['message' => 'Password changed successfully'], 200);
+                return Response::success('Password Changed Successfully');
             } catch (Exception $e) {
-                return response()->json(['message' => $e->getMessage()]);
+                return Response::error('Failed to send email: ' . $e->getMessage(), 500);
             }
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return Response::error($e->getMessage(), 500);
         }
     }
 }

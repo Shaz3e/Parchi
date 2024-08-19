@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\MailService;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Str;
 
 class ForgetPasswordController extends Controller
@@ -29,7 +30,7 @@ class ForgetPasswordController extends Controller
             // Check User
             $user = User::where('email', $validated['email'])->first();
             if (!$user) {
-                return response()->json(['message' => 'Email not found'], 404);
+                return Response::message('This email does not exist'. 404);
             }
 
             // if token exists delete
@@ -51,12 +52,12 @@ class ForgetPasswordController extends Controller
             try {
                 $this->mailService->sendEmail($mailable, $user->email);
 
-                return response()->json(['message' => 'Email has been sent']);
+                return Response::success('Password reset link has been sent to your email address');
             } catch (Exception $e) {
-                return response()->json(['message' => $e->getMessage()]);
+                Response::message('Failed to send Email: ' . $e->getMessage(), 500);
             }
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()]);
+            Response::error($e->getMessage(), 500);
         }
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Http\Resources\Api\V1\Auth\RegisterResource;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Response;
 
 class RegisterController extends Controller
 {
@@ -19,9 +20,9 @@ class RegisterController extends Controller
             $user = User::create($validated);
 
             // return resource
-            return new RegisterResource($user);
+            return Response::success(new RegisterResource($user));
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
+            Response::error($e->getMessage(), 500);
         }
     }
 }

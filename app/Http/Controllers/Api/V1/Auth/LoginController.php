@@ -7,6 +7,7 @@ use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Resources\Api\V1\Auth\LoginResource;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Response;
 
 class LoginController extends Controller
 {
@@ -19,14 +20,14 @@ class LoginController extends Controller
             // Login
             $credentials = $request->only(['email', 'password']);
             if (!auth()->attempt($credentials)) {
-                return response()->json(['error' => 'Invalid credentials'], 401);
+                return Response::error('Invalid Credentials', 401);
             }
 
             $user = User::where('email', $validated['email'])->get();
 
-            return new LoginResource($user);
+            return Response::success(new LoginResource($user));
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return Response::error($e->getMessage(), 500);
         }
     }
 }
