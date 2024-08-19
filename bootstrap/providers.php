@@ -2,5 +2,6 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\TenancyServiceProvider::class, // Multi Tenancy
+    App\Providers\MailServiceProvider::class,
+    App\Providers\TenancyServiceProvider::class,
 ];

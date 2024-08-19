@@ -48,6 +48,14 @@ return [
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
+        'backup_smtp' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_BACKUP_HOST', '127.0.0.1'),
+            'port' => env('MAIL_BACKUP_PORT', 2525),
+            'encryption' => env('MAIL_BACKUP_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_BACKUP_USERNAME'),
+            'password' => env('MAIL_BACKUP_PASSWORD'),
+        ],
 
         'ses' => [
             'transport' => 'ses',
