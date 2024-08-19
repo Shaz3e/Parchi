@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 
-class ResetPasswordController extends Controller
+class ResetPasswordController extends BaseController
 {
     public function __invoke(Request $request)
     {

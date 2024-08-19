@@ -2,23 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\MailServiceController;
 use App\Http\Requests\Api\V1\Auth\ChangePasswordRequest;
 use App\Mail\Auth\ChangePasswordEmail;
-use App\Services\MailService;
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 
-class ChangePasswordController extends Controller
+class ChangePasswordController extends MailServiceController
 {
-    protected $mailService;
-
-    public function __construct(MailService $mailService)
-    {
-        $this->mailService = $mailService;
-    }
     public function __invoke(ChangePasswordRequest $request)
     {
         try {
