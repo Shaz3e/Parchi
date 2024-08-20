@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Auth\ChangePasswordController;
 use App\Http\Controllers\Api\V1\Auth\ForgetPasswordController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
+use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\ResetPasswordController;
 use Illuminate\Http\Request;
@@ -29,10 +30,15 @@ Route::domain(config('app.domain'))->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
 
+        // Dashboard
         Route::get('/dashboard', function () {
             return 'main url for owner';
         });
 
+        // Change Password
         Route::post('/change-password', ChangePasswordController::class);
+
+        // Logout
+        Route::post('/logout', LogoutController::class);
     });
 });
