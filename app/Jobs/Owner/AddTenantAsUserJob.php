@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Owner;
 
 use App\Models\Tenant;
 use App\Models\User;
