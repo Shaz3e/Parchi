@@ -23,9 +23,9 @@ class LoginController extends BaseController
                 return Response::error('Invalid Credentials', 401);
             }
 
-            $user = User::where('email', $validated['email'])->get();
+            $user = User::where('email', $validated['email'])->first();
 
-            return Response::success(new LoginResource($user));
+            return Response::success('Welcome Back ' . $user->name, new LoginResource($user));
         } catch (Exception $e) {
             return Response::error($e->getMessage(), 500);
         }

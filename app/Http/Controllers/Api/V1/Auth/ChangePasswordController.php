@@ -31,7 +31,7 @@ class ChangePasswordController extends MailServiceController
             try {
                 $this->mailService->sendEmail($mailable, $user->email);
 
-                return Response::success('Password Changed Successfully');
+                return Response::success('Password Changed Successfully', $user);
             } catch (Exception $e) {
                 return Response::error('Failed to send email: ' . $e->getMessage(), 500);
             }

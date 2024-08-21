@@ -45,7 +45,7 @@ class ForgetPasswordController extends MailServiceController
             try {
                 $this->mailService->sendEmail($mailable, $user->email);
 
-                return Response::success('Password reset link has been sent to your email address');
+                return Response::success('Password reset link has been sent to your email address', $user);
             } catch (Exception $e) {
                 Response::message('Failed to send Email: ' . $e->getMessage(), 500);
             }

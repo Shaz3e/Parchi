@@ -43,7 +43,7 @@ class ResetPasswordController extends BaseController
                 ->where('email', $request->email)
                 ->delete();
 
-            return Response::success("Password has been reset successfully. You can now login");
+            return Response::message("Password has been reset successfully. You can now login");
         } catch (Exception $e) {
             Response::error($e->getMessage(), 500);
         }

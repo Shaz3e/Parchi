@@ -19,7 +19,7 @@ class RegisterController extends BaseController
             $user = User::create($validated);
 
             // return resource
-            return Response::success(new RegisterResource($user));
+            return Response::success('You are registered',new RegisterResource($user));
         } catch (Exception $e) {
             Response::error($e->getMessage(), 500);
         }
