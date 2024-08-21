@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1\Owner;
 
-use App\Http\Controllers\BaseController;
-use App\Http\Requests\Api\V1\Owner\Tenant\StoreTenantRequest;
-use App\Http\Requests\Api\V1\Owner\Tenant\UpdateTenantRequest;
-use App\Http\Resources\Api\V1\Owner\Tenant\TenantResource;
-use App\Models\Tenant;
 use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
+use App\Http\Controllers\BaseController;
 use Illuminate\Support\Facades\Response;
 use Stancl\Tenancy\Database\Models\Domain;
+use App\Http\Resources\Api\V1\Owner\Tenant\TenantResource;
+use App\Http\Requests\Api\V1\Owner\Tenant\StoreTenantRequest;
+use App\Http\Requests\Api\V1\Owner\Tenant\UpdateTenantRequest;
 
 class TenantController extends BaseController
 {
@@ -71,8 +70,6 @@ class TenantController extends BaseController
             $tenant->load('domains');
 
             return Response::success('Tenant found', new TenantResource($tenant));
-        } catch (ModelNotFoundException $e) {
-            return Response::error('Tenant not found', 404);
         } catch (Exception $e) {
             return Response::error($e->getMessage(), 500);
         }
