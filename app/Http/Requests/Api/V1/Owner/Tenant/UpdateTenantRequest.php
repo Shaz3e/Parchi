@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\V1;
+namespace App\Http\Requests\Api\V1\Owner\Tenant;
 
 use App\Http\Requests\BaseFormRequest;
 
-class StoreTenantRequest extends BaseFormRequest
+class UpdateTenantRequest extends BaseFormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,10 +15,7 @@ class StoreTenantRequest extends BaseFormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'email' => 'required|email|unique:tenants,email',
-            'password' => 'required|string|max:255',
-            'confirm_password' => 'required|same:password',
-            'domain' => 'required|max:255|unique:domains,domain'
+            'email' => 'required|email|unique:tenants,email,' . $this->route('tenant')->id
         ];
     }
 }

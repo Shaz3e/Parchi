@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\ResetPasswordController;
 
 // Tenant Controller
-use App\Http\Controllers\Api\V1\TenantController;
+use App\Http\Controllers\Api\V1\Owner\TenantController;
 
 
 Route::get('/user', function () {

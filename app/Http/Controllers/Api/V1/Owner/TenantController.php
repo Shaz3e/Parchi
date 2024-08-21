@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Owner;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Api\V1\StoreTenantRequest;
-use App\Http\Requests\Api\V1\UpdateTenantRequest;
-use App\Http\Resources\Api\V1\TenantResource;
+use App\Http\Requests\Api\V1\Owner\Tenant\StoreTenantRequest;
+use App\Http\Requests\Api\V1\Owner\Tenant\UpdateTenantRequest;
+use App\Http\Resources\Api\V1\Owner\Tenant\TenantResource;
 use App\Models\Tenant;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use Stancl\Tenancy\Database\Models\Domain;
 
