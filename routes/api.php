@@ -1,13 +1,17 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
+// Auth Controller
 use App\Http\Controllers\Api\V1\Auth\ChangePasswordController;
 use App\Http\Controllers\Api\V1\Auth\ForgetPasswordController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\ResetPasswordController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+
+// Tenant Controller
+use App\Http\Controllers\Api\V1\TenantController;
 
 
 Route::get('/user', function () {
@@ -40,5 +44,10 @@ Route::domain(config('app.domain'))->group(function () {
 
         // Logout
         Route::post('/logout', LogoutController::class);
+
+        // Tenants
+        Route::resource('/tenants', TenantController::class);
+        Route::put('/tenants/change-password/{tenant}', [TenantController::class, 'changePassword']);
+        Route::post('/tenants/add-domain/{tenant}', [TenantController::class, 'addDomain']);
     });
 });

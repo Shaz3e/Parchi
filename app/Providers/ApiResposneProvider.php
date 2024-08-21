@@ -21,10 +21,11 @@ class ApiResposneProvider extends ServiceProvider
     public function boot(): void
     {
         // API Success Response
-        Response::macro('success', function ($data, $code = 200) {
+        Response::macro('success', function ($message = '', $data, $code = 200) {
             return Response::json([
                 'code' => $code,
                 'status' => 'success',
+                'message' => $message,
                 'data' => $data
             ]);
         });
@@ -39,7 +40,7 @@ class ApiResposneProvider extends ServiceProvider
         });
 
         // Api Error Response
-        Response::macro('error', function ($message, $code) {
+        Response::macro('error', function ($message, $code = 500) {
             return Response::json([
                 'code' => $code,
                 'status' => 'error',
