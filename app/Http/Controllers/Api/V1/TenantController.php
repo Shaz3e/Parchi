@@ -104,7 +104,12 @@ class TenantController extends BaseController
     public function destroy(Tenant $tenant)
     {
         try {
+            // Delete the tenant's domain
+            $tenant->domains()->delete();
+
+            // Delete the tenant record
             $tenant->delete();
+
             return Response::message('Tenant has been deleted', 200);
         } catch (Exception $e) {
             return Response::error($e->getMessage(), 500);
