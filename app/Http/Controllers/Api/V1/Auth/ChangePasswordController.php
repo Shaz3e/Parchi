@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Http\Controllers\MailServiceController;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\Api\V1\Auth\ChangePasswordRequest;
+use App\Jobs\SendEmailJob;
 use App\Mail\Auth\ChangePasswordEmail;
 use Exception;
 use Illuminate\Support\Facades\Response;
 
-class ChangePasswordController extends MailServiceController
+class ChangePasswordController extends BaseController
 {
     public function __invoke(ChangePasswordRequest $request)
     {
@@ -29,7 +30,7 @@ class ChangePasswordController extends MailServiceController
             $mailable = new ChangePasswordEmail($user);
 
             try {
-                $this->mailService->sendEmail($mailable, $user->email);
+                SendEmailJob::dispatch($mailable, $user->email);
 
                 return Response::success('Password Changed Successfully', $user);
             } catch (Exception $e) {
