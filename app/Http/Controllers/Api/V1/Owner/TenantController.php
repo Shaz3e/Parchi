@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 use Illuminate\Support\Facades\Response;
 use Stancl\Tenancy\Database\Models\Domain;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\Api\V1\Owner\Tenant\TenantResource;
 use App\Http\Requests\Api\V1\Owner\Tenant\StoreTenantRequest;
 use App\Http\Requests\Api\V1\Owner\Tenant\UpdateTenantRequest;
@@ -64,12 +65,15 @@ class TenantController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(Tenant $tenant)
+    public function show($tenant)
     {
         try {
-            $tenant->load('domains');
+            // Find the tenant with domains
+            $tenant = Tenant::with('domains')->findOrFail($tenant);
 
             return Response::success('Tenant found', new TenantResource($tenant));
+        } catch (ModelNotFoundException $e) {
+            return Response::error('Tenant not found', 404);
         } catch (Exception $e) {
             return Response::error($e->getMessage(), 500);
         }
@@ -78,17 +82,22 @@ class TenantController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTenantRequest $request, Tenant $tenant)
+    public function update(UpdateTenantRequest $request, $tenant)
     {
         try {
             // Validation
             $validated = $request->validated();
+
+            // Find the tenant
+            $tenant = Tenant::findOrFail($tenant);
 
             // Update Tenant
             $tenant->update($validated);
 
             // Return response
             return Response::success('Tenant has been updated', new TenantResource($tenant), 200);
+        } catch (ModelNotFoundException $e) {
+            return Response::error('Tenant not found', 404);
         } catch (Exception $e) {
             return Response::error($e->getMessage(), 500);
         }
@@ -97,9 +106,12 @@ class TenantController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tenant $tenant)
+    public function destroy($tenant)
     {
         try {
+            // Find the tenant
+            $tenant = Tenant::findOrFail($tenant);
+
             // Delete the tenant's domain
             $tenant->domains()->delete();
 
@@ -107,6 +119,8 @@ class TenantController extends BaseController
             $tenant->delete();
 
             return Response::message('Tenant has been deleted', 200);
+        } catch (ModelNotFoundException $e) {
+            return Response::error('Tenant not found', 404);
         } catch (Exception $e) {
             return Response::error($e->getMessage(), 500);
         }
@@ -115,7 +129,7 @@ class TenantController extends BaseController
     /**
      * Change password for the specified resource from storage.
      */
-    public function changePassword(Request $request, Tenant $tenant)
+    public function changePassword(Request $request, $tenant)
     {
         try {
             // Validation
@@ -127,11 +141,16 @@ class TenantController extends BaseController
             // Unset confirm_password
             unset($validated['confirm_password']);
 
+            // Find tenant
+            $tenant = Tenant::findOrFail($tenant);
+
             // Update Tenant
             $tenant->update($validated);
 
             // Return response
             return Response::success('Password has been updated', new TenantResource($tenant), 200);
+        } catch (ModelNotFoundException $e) {
+            return Response::error('Tenant not found', 404);
         } catch (Exception $e) {
             return Response::error($e->getMessage(), 500);
         }
@@ -140,16 +159,16 @@ class TenantController extends BaseController
     /**
      * Add domain for the specified resource from storage.
      */
-    public function addDomain(Request $request, Tenant $tenant)
+    public function addDomain(Request $request, $tenant)
     {
         try {
-            // Find the tenant
-            $tenant = Tenant::findOrFail($tenant->id);
-
             // Validation
             $validated = $request->validate([
                 'domain' => 'required|max:255|unique:domains,domain'
             ]);
+
+            // Find the tenant
+            $tenant = Tenant::findOrFail($tenant);
 
             // Add Domain
             $tenant->domains()->create([
@@ -158,6 +177,8 @@ class TenantController extends BaseController
 
             // Return response
             return Response::success('Domain has been added', new TenantResource($tenant), 200);
+        } catch (ModelNotFoundException $e) {
+            return Response::error('Tenant not found', 404);
         } catch (Exception $e) {
             return Response::error($e->getMessage(), 500);
         }
