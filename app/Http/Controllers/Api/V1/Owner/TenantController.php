@@ -12,6 +12,18 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\Api\V1\Owner\Tenant\TenantResource;
 use App\Http\Requests\Api\V1\Owner\Tenant\StoreTenantRequest;
 use App\Http\Requests\Api\V1\Owner\Tenant\UpdateTenantRequest;
+use App\Jobs\Owner\OwnerNotificationJob;
+use App\Jobs\SendEmailJob;
+use App\Mail\Owner\Tenant\OwnerTenantChangePasswordEmail;
+use App\Mail\Owner\Tenant\OwnerTenantCreatedEmail;
+use App\Mail\Owner\Tenant\OwnerTenantDeletedEmail;
+use App\Mail\Owner\Tenant\OwnerTenantDomainAddedEmail;
+use App\Mail\Owner\Tenant\OwnerTenantUpdatedEmail;
+use App\Mail\Tenant\Tenant\TenantChangePasswordEmail;
+use App\Mail\Tenant\Tenant\TenantDeletedEmail;
+use App\Mail\Tenant\Tenant\TenantDomainAddedEmail;
+use App\Mail\Tenant\Tenant\TenantRegisterEmail;
+use App\Mail\Tenant\Tenant\TenantUpdatedEmail;
 
 class TenantController extends BaseController
 {
@@ -55,6 +67,21 @@ class TenantController extends BaseController
                 'domain' => $validated['domain'] . '.' . config('app.domain'),
             ]);
 
+            // Dispatching owner notification
+            $mailable = new OwnerTenantCreatedEmail($tenant);
+            OwnerNotificationJob::dispatch($mailable);
+
+            // Dispatching tenant notification
+            $password = request()->input('password');
+            $mailData = [
+                'name' => $tenant->name,
+                'email' => $tenant->email,
+                'password' => $password,
+            ];
+
+            $mailable = new TenantRegisterEmail($mailData);
+            SendEmailJob::dispatch($mailable, $tenant->email);
+
             // Return response
             return Response::success('Tenant has been created', $tenant, 200);
         } catch (Exception $e) {
@@ -94,6 +121,14 @@ class TenantController extends BaseController
             // Update Tenant
             $tenant->update($validated);
 
+            // Dispatching owner notification
+            $mailable = new OwnerTenantUpdatedEmail($tenant);
+            OwnerNotificationJob::dispatch($mailable);
+
+            // Dipatching tenant notification
+            $mailable = new TenantUpdatedEmail($tenant);
+            SendEmailJob::dispatch($mailable, $tenant->email);
+
             // Return response
             return Response::success('Tenant has been updated', new TenantResource($tenant), 200);
         } catch (ModelNotFoundException $e) {
@@ -106,17 +141,34 @@ class TenantController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($tenant)
+    public function destroy($tenantId)
     {
         try {
             // Find the tenant
-            $tenant = Tenant::findOrFail($tenant);
+            $tenant = Tenant::findOrFail($tenantId);
+
+            // Gather domain data before deletion
+            $domains = $tenant->domains()->get(['domain'])->pluck('domain')->toArray();
+
+            // Attach domain data to the tenant
+            $tenant->deletionData = [
+                'tenantData' => $tenant->toArray(),
+                'domains' => $domains,
+            ];
 
             // Delete the tenant's domain
             $tenant->domains()->delete();
 
             // Delete the tenant record
             $tenant->delete();
+
+            // Dispatching owner notification
+            $mailable = new OwnerTenantDeletedEmail($tenant->deletionData);
+            OwnerNotificationJob::dispatch($mailable);
+
+            // Dispatching tenant notifications
+            $mailable = new TenantDeletedEmail($tenant->deletionData);
+            SendEmailJob::dispatch($mailable, $tenant->deletionData['tenantData']['email']);
 
             return Response::message('Tenant has been deleted', 200);
         } catch (ModelNotFoundException $e) {
@@ -147,6 +199,13 @@ class TenantController extends BaseController
             // Update Tenant
             $tenant->update($validated);
 
+            // Dispatching owner notification
+            $mailable = new OwnerTenantChangePasswordEmail($tenant);
+            OwnerNotificationJob::dispatch($mailable);
+
+            $mailable = new TenantChangePasswordEmail($tenant);
+            SendEmailJob::dispatch($mailable, $tenant->email);
+
             // Return response
             return Response::success('Password has been updated', new TenantResource($tenant), 200);
         } catch (ModelNotFoundException $e) {
@@ -171,9 +230,23 @@ class TenantController extends BaseController
             $tenant = Tenant::findOrFail($tenant);
 
             // Add Domain
-            $tenant->domains()->create([
+            $domain = $tenant->domains()->create([
                 'domain' => $validated['domain'] . '.' . config('app.domain'),
             ]);
+
+            // Combine tenant and domain data into single array
+            $mailData = [
+                'tenant' => $tenant->toArray(),
+                'domain' => $domain->toArray()
+            ];
+
+            // Dispatching owner notification
+            $mailable = new OwnerTenantDomainAddedEmail($mailData);
+            OwnerNotificationJob::dispatch($mailable);
+
+            // Dispatching tenant notification
+            $mailable = new TenantDomainAddedEmail($mailData);
+            SendEmailJob::dispatch($mailable, $tenant->email);
 
             // Return response
             return Response::success('Domain has been added', new TenantResource($tenant), 200);
