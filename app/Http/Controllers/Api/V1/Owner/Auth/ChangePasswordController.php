@@ -1,13 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Auth;
+namespace App\Http\Controllers\Api\V1\Owner\Auth;
 
-use App\Http\Controllers\BaseController;
-use App\Http\Requests\Api\V1\Auth\ChangePasswordRequest;
-use App\Jobs\SendEmailJob;
-use App\Mail\Auth\ChangePasswordEmail;
 use Exception;
+use App\Jobs\SendEmailJob;
+use App\Http\Controllers\BaseController;
 use Illuminate\Support\Facades\Response;
+use App\Mail\Owner\Auth\OwnerChangePasswordEmail;
+use App\Http\Requests\Api\V1\Auth\ChangePasswordRequest;
+use Illuminate\Support\Facades\Hash;
+
+use function Laravel\Prompts\password;
 
 class ChangePasswordController extends BaseController
 {
@@ -19,15 +22,15 @@ class ChangePasswordController extends BaseController
 
             // Check current password
             $user = auth()->user();
-            if (!password_verify($validated['current_password'], $user->password)) {
-                Response::message('Current password is incorrect', 401);
+            if (!Hash::check($request->current_password, $user->password)) {
+                return Response::message('Current password is incorrect', 401);
             }
 
-            // Change Password
-            $user->password = bcrypt($validated['password']);
+            // Change password
+            $user->password = $validated['password'];
             $user->save();
 
-            $mailable = new ChangePasswordEmail($user);
+            $mailable = new OwnerChangePasswordEmail($user);
 
             try {
                 SendEmailJob::dispatch($mailable, $user->email);

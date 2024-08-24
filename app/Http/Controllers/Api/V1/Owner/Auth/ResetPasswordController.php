@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Auth;
+namespace App\Http\Controllers\Api\V1\Owner\Auth;
 
-use App\Http\Controllers\BaseController;
-use App\Models\User;
 use Exception;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\BaseController;
 use Illuminate\Support\Facades\Response;
 
 class ResetPasswordController extends BaseController

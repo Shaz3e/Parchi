@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Auth;
+namespace App\Http\Controllers\Api\V1\Owner\Auth;
 
+use Exception;
+use App\Models\User;
 use App\Http\Controllers\BaseController;
+use Illuminate\Support\Facades\Response;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Http\Resources\Api\V1\Auth\RegisterResource;
-use App\Models\User;
-use Exception;
-use Illuminate\Support\Facades\Response;
 
 class RegisterController extends BaseController
 {
