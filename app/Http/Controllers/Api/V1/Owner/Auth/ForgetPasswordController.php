@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Auth;
+namespace App\Http\Controllers\Api\V1\Owner\Auth;
 
-use App\Http\Controllers\BaseController;
-use App\Http\Requests\Api\V1\Auth\ForgetPasswordRequest;
-use App\Jobs\SendEmailJob;
-use App\Mail\Auth\ForgetPasswordEmail;
-use App\Models\User;
 use Exception;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
+use App\Models\User;
+use App\Jobs\SendEmailJob;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\BaseController;
+use Illuminate\Support\Facades\Response;
+use App\Mail\Owner\Auth\OwnerForgotPasswordEmail;
+use App\Http\Requests\Api\V1\Auth\ForgetPasswordRequest;
+use App\Jobs\Owner\OwnerNotificationJob;
 
 class ForgetPasswordController extends BaseController
 {
@@ -40,8 +41,15 @@ class ForgetPasswordController extends BaseController
                 'created_at' => now(),
             ]);
 
+            $mailData = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'token' => $token,
+                'url' => url('/api/v1/reset-password/' . $user->email . '/' . $token),
+            ];
+
             // Create mailable data
-            $mailable = new ForgetPasswordEmail($user, $token);
+            $mailable = new OwnerForgotPasswordEmail($mailData);
 
             try {
                 SendEmailJob::dispatch($mailable, $user->email);

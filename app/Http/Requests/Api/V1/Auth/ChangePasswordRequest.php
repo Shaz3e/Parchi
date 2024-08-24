@@ -14,8 +14,8 @@ class ChangePasswordRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'current_password' => 'required|string|max:255',
-            'password' => 'required|string|different:current_password|max:255',
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:8|max:255|different:current_password',
             'confirmed' => 'required|same:password'
         ];
     }
