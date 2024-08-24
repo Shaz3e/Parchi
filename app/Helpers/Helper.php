@@ -2,6 +2,7 @@
 
 use App\Models\Setting;
 
-function Setting($appSettingName){
+function Setting($appSettingName)
+{
     return Setting::where('name', $appSettingName)->value('setting');
 }
