@@ -11,41 +11,42 @@ use Illuminate\Support\Facades\Response;
 
 class ResetPasswordController extends BaseController
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, $email, $token)
     {
         try {
-            // Check token
+            // Check Token
             $tokenExists = DB::table('password_reset_tokens')
-                ->where([
-                    'email' => $request->email,
-                    'token' => $request->token
-                ])
+                ->where('email', $email)
+                ->where('token', $token)
                 ->exists();
 
             if (!$tokenExists) {
-                Response::message('Password reset link is expired, please reset your password again.');
+                return Response::message('Invalid password reset link');
             }
 
-            // When token and email are valid reset password
-            $user = User::where('email', $request->email)->first();
-
+            // Validation
             $validated = $request->validate([
-                'password' => 'required|string|max:255',
-                'confirm_password' => 'required|same:password|string|max:255',
+                'password' => 'required|string|min:8',
+                'confirm_password' => 'required|same:password',
             ]);
 
-            // Change Password
+            // Reset Password
+            $user = User::where('email', $email)->first();
+            if (!$user) {
+                return Response::error('User not found', 404);
+            }
+
             $user->password = bcrypt($validated['password']);
             $user->save();
 
-            // Delete the token from database
+            // Delete token
             DB::table('password_reset_tokens')
-                ->where('email', $request->email)
+                ->where('email', $email)
                 ->delete();
 
-            return Response::message("Password has been reset successfully. You can now login");
+            return Response::message('Password reset successfully');
         } catch (Exception $e) {
-            Response::error($e->getMessage(), 500);
+            return Response::error($e->getMessage(), 500);
         }
     }
 }
