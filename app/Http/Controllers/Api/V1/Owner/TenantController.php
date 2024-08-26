@@ -4,26 +4,27 @@ namespace App\Http\Controllers\Api\V1\Owner;
 
 use Exception;
 use App\Models\Tenant;
+use App\Jobs\SendEmailJob;
 use Illuminate\Http\Request;
+use App\Services\TenantDatabaseService;
 use App\Http\Controllers\BaseController;
+use App\Jobs\Owner\OwnerNotificationJob;
 use Illuminate\Support\Facades\Response;
 use Stancl\Tenancy\Database\Models\Domain;
+use App\Mail\Tenant\Tenant\TenantDeletedEmail;
+use App\Mail\Tenant\Tenant\TenantUpdatedEmail;
+use App\Mail\Tenant\Tenant\TenantRegisterEmail;
+use App\Mail\Owner\Tenant\OwnerTenantCreatedEmail;
+use App\Mail\Owner\Tenant\OwnerTenantDeletedEmail;
+use App\Mail\Owner\Tenant\OwnerTenantUpdatedEmail;
+use App\Mail\Tenant\Tenant\TenantDomainAddedEmail;
+use App\Mail\Tenant\Tenant\TenantChangePasswordEmail;
+use App\Mail\Owner\Tenant\OwnerTenantDomainAddedEmail;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Mail\Owner\Tenant\OwnerTenantChangePasswordEmail;
 use App\Http\Resources\Api\V1\Owner\Tenant\TenantResource;
 use App\Http\Requests\Api\V1\Owner\Tenant\StoreTenantRequest;
 use App\Http\Requests\Api\V1\Owner\Tenant\UpdateTenantRequest;
-use App\Jobs\Owner\OwnerNotificationJob;
-use App\Jobs\SendEmailJob;
-use App\Mail\Owner\Tenant\OwnerTenantChangePasswordEmail;
-use App\Mail\Owner\Tenant\OwnerTenantCreatedEmail;
-use App\Mail\Owner\Tenant\OwnerTenantDeletedEmail;
-use App\Mail\Owner\Tenant\OwnerTenantDomainAddedEmail;
-use App\Mail\Owner\Tenant\OwnerTenantUpdatedEmail;
-use App\Mail\Tenant\Tenant\TenantChangePasswordEmail;
-use App\Mail\Tenant\Tenant\TenantDeletedEmail;
-use App\Mail\Tenant\Tenant\TenantDomainAddedEmail;
-use App\Mail\Tenant\Tenant\TenantRegisterEmail;
-use App\Mail\Tenant\Tenant\TenantUpdatedEmail;
 
 class TenantController extends BaseController
 {
@@ -66,6 +67,8 @@ class TenantController extends BaseController
             $tenant->domains()->create([
                 'domain' => $validated['domain'] . '.' . config('app.domain'),
             ]);
+
+            TenantDatabaseService::addTenantId($tenant, $tenant->id);
 
             // Dispatching owner notification
             $mailable = new OwnerTenantCreatedEmail($tenant);
@@ -120,6 +123,9 @@ class TenantController extends BaseController
 
             // Update Tenant
             $tenant->update($validated);
+
+            // Update tenant user's table
+            TenantDatabaseService::updateTenantData($tenant, $validated);
 
             // Dispatching owner notification
             $mailable = new OwnerTenantUpdatedEmail($tenant);
@@ -198,6 +204,9 @@ class TenantController extends BaseController
 
             // Update Tenant
             $tenant->update($validated);
+
+            // Change password in tenant table
+            TenantDatabaseService::updateTenantPassword($tenant, $validated['password']);
 
             // Dispatching owner notification
             $mailable = new OwnerTenantChangePasswordEmail($tenant);
