@@ -25,6 +25,11 @@ class LoginController extends BaseController
 
             $user = User::where('email', $validated['email'])->first();
 
+            // check if user is_active
+            if (!$user->is_active) {
+                return Response::error('Your account is restricted, please contact support', 401);
+            }
+
             return Response::success('Welcome Back ' . $user->name, new LoginResource($user));
         } catch (Exception $e) {
             return Response::error($e->getMessage(), 500);
