@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Owner\Auth;
+namespace App\Http\Controllers\Api\Owner\Auth;
 
 use Exception;
 use App\Models\User;
@@ -8,10 +8,9 @@ use App\Jobs\SendEmailJob;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Api\Owner\Auth\ForgetPasswordRequest;
 use Illuminate\Support\Facades\Response;
 use App\Mail\Owner\Auth\OwnerForgotPasswordEmail;
-use App\Http\Requests\Api\V1\Auth\ForgetPasswordRequest;
-use App\Jobs\Owner\OwnerNotificationJob;
 
 class ForgetPasswordController extends BaseController
 {

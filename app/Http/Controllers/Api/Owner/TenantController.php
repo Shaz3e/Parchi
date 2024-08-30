@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Owner;
+namespace App\Http\Controllers\Api\Owner;
 
 use Exception;
 use App\Models\Tenant;
@@ -22,9 +22,9 @@ use App\Mail\Tenant\Tenant\TenantChangePasswordEmail;
 use App\Mail\Owner\Tenant\OwnerTenantDomainAddedEmail;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Mail\Owner\Tenant\OwnerTenantChangePasswordEmail;
-use App\Http\Resources\Api\V1\Owner\Tenant\TenantResource;
-use App\Http\Requests\Api\V1\Owner\Tenant\StoreTenantRequest;
-use App\Http\Requests\Api\V1\Owner\Tenant\UpdateTenantRequest;
+use App\Http\Resources\Api\Owner\Tenant\TenantResource;
+use App\Http\Requests\Api\Owner\Tenant\StoreTenantRequest;
+use App\Http\Requests\Api\Owner\Tenant\UpdateTenantRequest;
 
 class TenantController extends BaseController
 {

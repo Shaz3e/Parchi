@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Owner\Auth;
+namespace App\Http\Controllers\Api\Owner\Auth;
 
 use Exception;
 use App\Models\User;

@@ -3,15 +3,15 @@
 use Illuminate\Support\Facades\Route;
 
 // Auth Controller
-use App\Http\Controllers\Api\V1\Owner\Auth\ChangePasswordController;
-use App\Http\Controllers\Api\V1\Owner\Auth\ForgetPasswordController;
-use App\Http\Controllers\Api\V1\Owner\Auth\LoginController;
-use App\Http\Controllers\Api\V1\Owner\Auth\LogoutController;
-use App\Http\Controllers\Api\V1\Owner\Auth\RegisterController;
-use App\Http\Controllers\Api\V1\Owner\Auth\ResetPasswordController;
+use App\Http\Controllers\Api\Owner\Auth\ChangePasswordController;
+use App\Http\Controllers\Api\Owner\Auth\ForgetPasswordController;
+use App\Http\Controllers\Api\Owner\Auth\LoginController;
+use App\Http\Controllers\Api\Owner\Auth\LogoutController;
+use App\Http\Controllers\Api\Owner\Auth\RegisterController;
+use App\Http\Controllers\Api\Owner\Auth\ResetPasswordController;
 
 // Tenant Controller
-use App\Http\Controllers\Api\V1\Owner\TenantController;
+use App\Http\Controllers\Api\Owner\TenantController;
 
 
 Route::get('/user', function () {

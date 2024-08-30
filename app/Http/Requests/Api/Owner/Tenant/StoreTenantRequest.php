@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\V1\Owner\Tenant;
+namespace App\Http\Requests\Api\Owner\Tenant;
 
 use App\Http\Requests\BaseFormRequest;
 

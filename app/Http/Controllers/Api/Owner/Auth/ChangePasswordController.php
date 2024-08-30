@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Owner\Auth;
+namespace App\Http\Controllers\Api\Owner\Auth;
 
 use Exception;
 use App\Jobs\SendEmailJob;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Api\Owner\Auth\ChangePasswordRequest;
 use Illuminate\Support\Facades\Response;
 use App\Mail\Owner\Auth\OwnerChangePasswordEmail;
-use App\Http\Requests\Api\V1\Auth\ChangePasswordRequest;
 use Illuminate\Support\Facades\Hash;
-
-use function Laravel\Prompts\password;
 
 class ChangePasswordController extends BaseController
 {

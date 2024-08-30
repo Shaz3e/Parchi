@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Api\V1\Owner\Tenant;
+namespace App\Http\Resources\Api\Owner\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TenantResource extends JsonResource
+class RegisterResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,8 +14,6 @@ class TenantResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            'resource' => $this->resource,
-        ];
+        return parent::toArray($request);
     }
 }

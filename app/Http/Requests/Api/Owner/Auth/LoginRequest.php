@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\V1\Auth;
+namespace App\Http\Requests\Api\Owner\Auth;
 
 use App\Http\Requests\BaseFormRequest;
 
-class ForgetPasswordRequest extends BaseFormRequest
+class LoginRequest extends BaseFormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,7 +14,8 @@ class ForgetPasswordRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|exists:users,email'
+            'email' => 'required|exists:users,email',
+            'password' => 'required'
         ];
     }
 }

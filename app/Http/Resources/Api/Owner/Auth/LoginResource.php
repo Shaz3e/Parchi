@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Resources\Api\V1\Auth;
+namespace App\Http\Resources\Api\Owner\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\DB;
 
 class LoginResource extends JsonResource
 {

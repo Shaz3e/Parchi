@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Api\V1\Auth;
+namespace App\Http\Requests\Api\Owner\Auth;
 
 use App\Http\Requests\BaseFormRequest;
-use Illuminate\Validation\Rule;
 
 class RegisterRequest extends BaseFormRequest
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Owner\Auth;
+namespace App\Http\Controllers\Api\Owner\Auth;
 
 use Exception;
 use App\Models\User;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Api\Owner\Auth\LoginRequest;
+use App\Http\Resources\Api\Owner\Auth\LoginResource;
 use Illuminate\Support\Facades\Response;
-use App\Http\Requests\Api\V1\Auth\LoginRequest;
-use App\Http\Resources\Api\V1\Auth\LoginResource;
 
 class LoginController extends BaseController
 {

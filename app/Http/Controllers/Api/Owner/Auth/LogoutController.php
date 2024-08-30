@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Owner\Auth;
+namespace App\Http\Controllers\Api\Owner\Auth;
 
 use Exception;
 use Illuminate\Http\Request;
@@ -11,12 +11,12 @@ class LogoutController extends BaseController
 {
     public function __invoke(Request $request)
     {
-        try{
+        try {
             // Revoke the token that was used to authenticate the current request
             $request->user()->currentAccessToken()->delete();
 
             return Response::message('You have successfully logged out');
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return Response::error($e->getMessage(), 500);
         }
     }
