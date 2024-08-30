@@ -14,9 +14,9 @@ use App\Http\Controllers\Api\Owner\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\Owner\TenantController;
 
 
-Route::get('/user', function () {
-    return 'user route';
-})->middleware('auth:sanctum');
+// Route::get('/user', function () {
+//     return 'user route';
+// })->middleware('auth:sanctum');
 
 Route::domain(config('app.domain'))->group(function () {
 

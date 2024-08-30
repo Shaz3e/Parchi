@@ -40,7 +40,7 @@ class TenantController extends BaseController
             // Return Tenant Resource
             return Response::success('Tenant List', new TenantResource($tenants));
         } catch (Exception $e) {
-            Response::error($e->getMessage(), 500);
+            return Response::error($e->getMessage(), 500);
         }
     }
 

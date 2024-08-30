@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Api\Owner\Auth;
+namespace App\Http\Controllers\Api\Tenant\Auth;
 
-use Exception;
-use App\Models\User;
-use App\Jobs\SendEmailJob;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Api\Owner\Auth\ForgetPasswordRequest;
+use App\Http\Requests\Api\Tenant\Auth\ForgetPasswordRequest;
+use App\Jobs\SendEmailJob;
+use App\Mail\Tenant\Auth\ForgotPasswordEmail;
+use App\Models\User;
+use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
-use App\Mail\Owner\Auth\OwnerForgotPasswordEmail;
+use Illuminate\Support\Str;
 
 class ForgetPasswordController extends BaseController
 {
@@ -40,6 +41,7 @@ class ForgetPasswordController extends BaseController
                 'created_at' => now(),
             ]);
 
+            // Create mailable data
             $mailData = [
                 'name' => $user->name,
                 'email' => $user->email,
@@ -47,18 +49,17 @@ class ForgetPasswordController extends BaseController
                 'url' => url('/api/reset-password/' . $user->email . '/' . $token),
             ];
 
-            // Create mailable data
-            $mailable = new OwnerForgotPasswordEmail($mailData);
+            $mailable = new ForgotPasswordEmail($mailData);
 
             try {
                 SendEmailJob::dispatch($mailable, $user->email);
 
                 return Response::success('Password reset link has been sent to your email address', $user);
             } catch (Exception $e) {
-                Response::message('Failed to send Email: ' . $e->getMessage(), 500);
+                return Response::message('Failed to send Email: ' . $e->getMessage(), 500);
             }
         } catch (Exception $e) {
-            Response::error($e->getMessage(), 500);
+            return Response::error($e->getMessage(), 500);
         }
     }
 }
